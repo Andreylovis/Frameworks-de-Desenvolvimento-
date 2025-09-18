@@ -20,3 +20,17 @@ class Pacote {
         estado = estado.proximo(e);
     }
 }
+
+enum Evento – Lista os acontecimentos que podem ocorrer: o pacote é registrado, separado, sai para entrega, é entregue ou perdido.
+
+enum Estado – Cada estado (CRIADO, REGISTRADO, etc.) já guarda em um mapa de transições qual será o próximo estado permitido para cada evento.
+
+Ex.: de CRIADO, se ocorrer REGISTRADO, vai para REGISTRADO.
+
+O método proximo(Evento e) apenas consulta o mapa, sem if ou switch.
+
+class Pacote – representa o pacote.
+
+Começa em Estado.CRIADO.
+
+O método aplicar(Evento e) atualiza o estado chamando estado.proximo(e).
