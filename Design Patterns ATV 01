@@ -1,0 +1,22 @@
+enum Evento { REGISTRADO, SEPARADO, SAIU_ENTREGA, ENTREGUE, PERDIDO }
+
+enum Estado {
+    CRIADO(Map.of(Evento.REGISTRADO, REGISTRADO)),
+    REGISTRADO(Map.of(Evento.SEPARADO, SEPARADO)),
+    SEPARADO(Map.of(Evento.SAIU_ENTREGA, SAIU_ENTREGA)),
+    SAIU_ENTREGA(Map.of(Evento.ENTREGUE, ENTREGUE)),
+    ENTREGUE(Map.of()),
+    PERDIDO(Map.of());
+
+    private final Map<Evento, Estado> transicoes;
+    Estado(Map<Evento, Estado> transicoes){ this.transicoes = transicoes; }
+
+    Estado proximo(Evento e){ return transicoes.getOrDefault(e, this); }
+}
+
+class Pacote {
+    Estado estado = Estado.CRIADO;
+    void aplicar(Evento e) {
+        estado = estado.proximo(e);
+    }
+}
