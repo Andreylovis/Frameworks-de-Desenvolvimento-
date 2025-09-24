@@ -1,0 +1,79 @@
+import java.util.*;
+
+public class MazeGameMatrix {
+    private static final int MAX_LEVELS = 3;
+    private static final int HEIGHT = 11;
+    private static final int WIDTH = 21;
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        Random rnd = new Random();
+        System.out.println("=== Jogo do Labirinto ===\nUse W/A/S/D para mover e Q para sair.\n");
+
+        for (int level = 1; level <= MAX_LEVELS; level++) {
+            System.out.println("--- Labirinto " + level + " de " + MAX_LEVELS + " ---");
+            char[][] maze = generateMaze(HEIGHT, WIDTH, rnd);
+            int playerR = 0, playerC = 1; 
+            int exitR = HEIGHT - 1, exitC = WIDTH - 2; 
+
+            while (true) {
+                printMaze(maze, playerR, playerC, exitR, exitC);
+                System.out.print("Mover (W/A/S/D): ");
+                String in = sc.nextLine().toLowerCase();
+                if (in.isEmpty()) continue;
+                char cmd = in.charAt(0);
+                if (cmd == 'q') {
+                    System.out.println("Saindo do jogo. Até logo!");
+                    return;
+                }
+
+                int nr = playerR + (cmd == 's' ? 1 : cmd == 'w' ? -1 : 0);
+                int nc = playerC + (cmd == 'd' ? 1 : cmd == 'a' ? -1 : 0);
+
+                if (nr >= 0 && nr < HEIGHT && nc >= 0 && nc < WIDTH && maze[nr][nc] == ' ') {
+                    playerR = nr;
+                    playerC = nc;
+                } else {
+                    System.out.println("Parede! Tente outro caminho.");
+                }
+
+                if (playerR == exitR && playerC == exitC) {
+                    System.out.println("\n*** Saída encontrada! ***\n");
+                    break;
+                }
+            }
+        }
+
+        System.out.println("PARABÉNS! Todos os labirintos concluídos!");
+        sc.close();
+    }
+
+    private static void printMaze(char[][] maze, int pr, int pc, int er, int ec) {
+        for (int i = 0; i < maze.length; i++) {
+            for (int j = 0; j < maze[0].length; j++) {
+                if (i == pr && j == pc) System.out.print('P');
+                else if (i == 0 && j == 1) System.out.print('E');
+                else if (i == er && j == ec) System.out.print('X');
+                else System.out.print(maze[i][j]);
+            }
+            System.out.println();
+        }
+    }
+
+    private static char[][] generateMaze(int h, int w, Random rnd) {
+        char[][] m = new char[h][w];
+        for (int i = 0; i < h; i++)
+            Arrays.fill(m[i], '#');
+        
+        int r = 1, c = 1;
+        m[r][c] = ' ';
+        while (r < h - 1 || c < w - 1) {
+            if (r < h - 2 && rnd.nextBoolean()) r++;
+            else if (c < w - 2) c++;
+            m[r][c] = ' ';
+        }
+        m[0][1] = ' ';         
+        m[h - 1][w - 2] = ' '; 
+        return m;
+    }
+}
